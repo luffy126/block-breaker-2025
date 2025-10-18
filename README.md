@@ -1,9 +1,19 @@
-# BlockBreaker2024
+# BlockBreakerJava
+## EL QUE NO TRABAJA SE VA A GUANTANAMO
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
+Un juego estilo retro en Java, todo WIP por ahora
 
-This project was generated with a template including simple application launchers and an `ApplicationAdapter` extension that draws libGDX logo.
+### Para echar a andar el proyecto:
 
+- Usar IntelliJ preferentemente, descargar la carpeta y después importarla como proyecto
+- en IntelliJ abrir File>Project Structure
+- Dentro de la sección Project seleccionar el SDK **Corretto 17** (si no aparece en la lista clickear "Download JDK..." y seleccionar la version 17 y en vendor Amazon Corretto) y en Language level seleccionar el 17
+- En el archivo gradle.properties cambiar la linea de open.gradle.java.home y cambiar la ruta que aparece por la ruta donde está instalado el JDK 17 
+- Finalmente seleccionar el archivo gradlew sin extension y ejecutarlo con el botón verde de arriba a la derecha o dandole a enter
+- Si aparece un error en la consola **POR EL AMOR DE DIOS AVISEN!!!!** por discord o por whatsapp eso jeje
+
+Abajo hay cosas utiles del mismo gradle para debug y tal pero eso cualquier cosa que vayan a hacer por favor avisen la comunicación es clave ahora
+ 
 ## Platforms
 
 - `core`: Main module with the application logic shared by all platforms.
