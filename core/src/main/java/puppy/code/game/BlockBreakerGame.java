@@ -1,4 +1,4 @@
-package puppy.code;
+package puppy.code.game;
 
 import java.util.ArrayList;
 
@@ -11,11 +11,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import puppy.code.block.Block;
+import puppy.code.entities.Paddle;
+import puppy.code.entities.PingBall;
 
 
 public class BlockBreakerGame extends ApplicationAdapter {
     private OrthographicCamera camera;
-	private SpriteBatch batch;	   
+	private SpriteBatch batch;
 	private BitmapFont font;
 	private ShapeRenderer shape;
 	private PingBall ball;
@@ -24,9 +27,9 @@ public class BlockBreakerGame extends ApplicationAdapter {
 	private int vidas;
 	private int puntaje;
 	private int nivel;
-    
+
 		@Override
-		public void create () {	
+		public void create () {
 			camera = new OrthographicCamera();
 		    camera.setToOrtho(false, 800, 480);
 		    batch = new SpriteBatch();
@@ -34,12 +37,12 @@ public class BlockBreakerGame extends ApplicationAdapter {
 		    font.getData().setScale(3, 2);
 		    nivel = 1;
 		    crearBloques(2+nivel);
-			
+
 		    shape = new ShapeRenderer();
 		    ball = new PingBall(Gdx.graphics.getWidth()/2-10, 41, 10, 5, 7, true);
 		    pad = new Paddle(Gdx.graphics.getWidth()/2-50,40,100,10);
 		    vidas = 3;
-		    puntaje = 0;    
+		    puntaje = 0;
 		}
 		public void crearBloques(int filas) {
 			blocks.clear();
@@ -56,18 +59,18 @@ public class BlockBreakerGame extends ApplicationAdapter {
 		public void dibujaTextos() {
 			//actualizar matrices de la cámara
 			camera.update();
-			//actualizar 
+			//actualizar
 			batch.setProjectionMatrix(camera.combined);
 			batch.begin();
 			//dibujar textos
 			font.draw(batch, "Puntos: " + puntaje, 10, 25);
 			font.draw(batch, "Vidas : " + vidas, Gdx.graphics.getWidth()-20, 25);
 			batch.end();
-		}	
-		
+		}
+
 		@Override
 		public void render () {
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); 		
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	        shape.begin(ShapeRenderer.ShapeType.Filled);
 	        pad.draw(shape);
 	        // monitorear inicio del juego
@@ -86,36 +89,36 @@ public class BlockBreakerGame extends ApplicationAdapter {
 	        	vidas = 3;
 	        	nivel = 1;
 	        	crearBloques(2+nivel);
-	        	//ball = new PingBall(pad.getX()+pad.getWidth()/2-5, pad.getY()+pad.getHeight()+11, 10, 5, 7, true);	        	
+	        	//ball = new PingBall(pad.getX()+pad.getWidth()/2-5, pad.getY()+pad.getHeight()+11, 10, 5, 7, true);
 	        }
 	        // verificar si el nivel se terminó
 	        if (blocks.size()==0) {
 	        	nivel++;
 	        	crearBloques(2+nivel);
 	        	ball = new PingBall(pad.getX()+pad.getWidth()/2-5, pad.getY()+pad.getHeight()+11, 10, 5, 7, true);
-	        }    	
+	        }
 	        //dibujar bloques
-	        for (Block b : blocks) {        	
+	        for (Block b : blocks) {
 	            b.draw(shape);
 	            ball.checkCollision(b);
 	        }
-	        // actualizar estado de los bloques 
+	        // actualizar estado de los bloques
 	        for (int i = 0; i < blocks.size(); i++) {
 	            Block b = blocks.get(i);
-	            if (b.destroyed) {
+	            if (b.isDestroyed()) {
 	            	puntaje++;
 	                blocks.remove(b);
 	                i--; //para no saltarse 1 tras eliminar del arraylist
 	            }
 	        }
-	        
+
 	        ball.checkCollision(pad);
 	        ball.draw(shape);
-	        
+
 	        shape.end();
 	        dibujaTextos();
 		}
-		
+
 		@Override
 		public void dispose () {
 

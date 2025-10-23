@@ -1,10 +1,9 @@
-package puppy.code;
-
-
+package puppy.code.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import puppy.code.block.Block;
 
 public class PingBall {
 	    private int x;
@@ -14,7 +13,7 @@ public class PingBall {
 	    private int ySpeed;
 	    private Color color = Color.WHITE;
 	    private boolean estaQuieto;
-	    
+
 	    public PingBall(int x, int y, int size, int xSpeed, int ySpeed, boolean iniciaQuieto) {
 	        this.x = x;
 	        this.y = y;
@@ -23,7 +22,7 @@ public class PingBall {
 	        this.ySpeed = ySpeed;
 	        estaQuieto = iniciaQuieto;
 	    }
-	    
+
 	    public boolean estaQuieto() {
 	    	return estaQuieto;
 	    }
@@ -35,12 +34,12 @@ public class PingBall {
 	        this.y = y;
 	    }
 	    public int getY() {return y;}
-	    
+
 	    public void draw(ShapeRenderer shape){
 	        shape.setColor(color);
 	        shape.circle(x, y, size);
 	    }
-	    
+
 	    public void update() {
 	    	if (estaQuieto) return;
 	        x += xSpeed;
@@ -52,7 +51,7 @@ public class PingBall {
 	            ySpeed = -ySpeed;
 	        }
 	    }
-	    
+
 	    public void checkCollision(Paddle paddle) {
 	        if(collidesWith(paddle)){
 	            color = Color.GREEN;
@@ -65,21 +64,21 @@ public class PingBall {
 	    private boolean collidesWith(Paddle pp) {
 
 	    	boolean intersectaX = (pp.getX() + pp.getWidth() >= x-size) && (pp.getX() <= x+size);
-	        boolean intersectaY = (pp.getY() + pp.getHeight() >= y-size) && (pp.getY() <= y+size);		
+	        boolean intersectaY = (pp.getY() + pp.getHeight() >= y-size) && (pp.getY() <= y+size);
 	    	return intersectaX && intersectaY;
 	    }
-	    
+
 	    public void checkCollision(Block block) {
 	        if(collidesWith(block)){
 	            ySpeed = - ySpeed;
-	            block.destroyed = true;
+	            block.setDestroyed(true);
 	        }
 	    }
 	    private boolean collidesWith(Block bb) {
 
-	    	boolean intersectaX = (bb.x + bb.width >= x-size) && (bb.x <= x+size);
-	        boolean intersectaY = (bb.y + bb.height >= y-size) && (bb.y <= y+size);		
+	    	boolean intersectaX = (bb.getX() + bb.getWidth() >= x-size) && (bb.getX() <= x+size);
+	        boolean intersectaY = (bb.getY() + bb.getHeight() >= y-size) && (bb.getY() <= y+size);
 	    	return intersectaX && intersectaY;
 	    }
-	    
+
 	}
