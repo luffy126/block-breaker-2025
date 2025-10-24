@@ -3,6 +3,20 @@
 
 Un juego estilo retro en Java, todo WIP por ahora
 
+### Requisitos
+
+- Java 17 o superior instalado y seteado como default
+- Teclado y monitor, se asume que los tienes
+
+### Para correr el juego:
+
+- Descargar el .zip disponible en la pestaña Code del repositorio
+- Extraer con WinRAR o 7zip
+- Entrar a la carpeta del proyecto donde está el archivo gradlew
+- Copiar el directorio del proyecto
+- Abrir PowerShell y dentro de este colocar el siguiente comando: `cd C:\Ruta\A\Tu\Directorio`
+- Luego de esto ejecutar `./gradlew run`
+
 ### Para echar a andar el proyecto:
 
 - Usar IntelliJ preferentemente, descargar la carpeta y después importarla como proyecto
