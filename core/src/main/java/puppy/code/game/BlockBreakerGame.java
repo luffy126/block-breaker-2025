@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import puppy.code.block.Bloque;
 import puppy.code.block.BloqueDuro;
 import puppy.code.block.BloqueNormal;
+import puppy.code.block.BloqueRegen;
 import puppy.code.entities.Paddle;
 import puppy.code.entities.PingBall;
 
@@ -58,13 +59,17 @@ public class BlockBreakerGame extends ApplicationAdapter {
                 y -= blockHeight + 10;
 
                 for (int x = 5; x < Gdx.graphics.getWidth(); x += blockWidth + 10) {
-                    int tipoBloque = random.nextInt(2);
+                    int tipoBloque = random.nextInt(3);
                     Bloque bloque;
 
                     switch (tipoBloque) {
                         case 0:
                             bloque = new BloqueDuro(x, y, blockWidth, blockHeight);
                             break;
+
+                        case 1: bloque = new BloqueRegen(x, y, blockWidth, blockHeight);
+                            break;
+
                         default:
                             bloque = new BloqueNormal(x, y, blockWidth, blockHeight);
                             break;
@@ -117,14 +122,16 @@ public class BlockBreakerGame extends ApplicationAdapter {
 	        }
 	        //dibujar bloques
 	        for (Bloque b : blocks) {
-	            b.draw(shape);
-	            ball.checkCollision(b);
+                if (!b.isDestroyed()) {
+                    ball.checkCollision(b);
+                }
                 b.comportamiento(Gdx.graphics.getDeltaTime());
+                b.draw(shape);
 	        }
 	        // actualizar estado de los bloques
 	        for (int i = 0; i < blocks.size(); i++) {
 	            Bloque b = blocks.get(i);
-	            if (b.isDestroyed()) {
+	            if (b.debeEliminarse()) {
 	            	puntaje++;
 	                blocks.remove(b);
 	                i--; //para no saltarse 1 tras eliminar del arraylist

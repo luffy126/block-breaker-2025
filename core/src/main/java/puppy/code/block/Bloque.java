@@ -27,6 +27,10 @@ public abstract class Bloque implements Dañable {
         }
     }
 
+    public boolean debeEliminarse() {
+        return destroyed;
+    }
+
     public abstract void comportamiento(float delta);
 
     public boolean isDestroyed() {return destroyed;}

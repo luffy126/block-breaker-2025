@@ -24,8 +24,8 @@ public class BloqueDuro extends Bloque implements Dañable {
         if (!destroyed) {
             switch (health) {
                 case 3: cc = Color.DARK_GRAY; break;
-                case 2: cc = Color.LIGHT_GRAY; break;
-                case 1: cc = Color.GRAY; break;
+                case 2: cc = Color.GRAY; break;
+                case 1: cc = Color.LIGHT_GRAY; break;
             }
         }
     }
