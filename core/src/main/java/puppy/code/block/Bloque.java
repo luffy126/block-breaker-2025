@@ -1,31 +1,33 @@
 package puppy.code.block;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import puppy.code.interfaces.Dañable;
 
 import java.util.Random;
 
-import com.badlogic.gdx.graphics.Color;
+public abstract class Bloque implements Dañable {
+    protected int x,y,width,height;
+    protected Color cc;
+    protected boolean destroyed;
 
-public class Block {
-    int x,y,width,height;
-    Color cc;
-    boolean destroyed;
-
-    public Block(int x, int y, int width, int height) {
+    public Bloque(int x, int y, int width, int height, Color color) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.cc = color;
         destroyed = false;
-        Random r = new Random(x+y);
-
-       cc = new Color(0.1f+r.nextFloat(1), r.nextFloat(1), r.nextFloat(1), 10);
-
     }
+
     public void draw(ShapeRenderer shape){
-    	shape.setColor(cc);
-        shape.rect(x, y, width, height);
+        if (!destroyed) {
+            shape.setColor(cc);
+            shape.rect(x, y, width, height);
+        }
     }
+
+    public abstract void comportamiento(float delta);
 
     public boolean isDestroyed() {return destroyed;}
     public Color getColor() {return cc;}
@@ -36,8 +38,6 @@ public class Block {
 
     public void setX(int x) {this.x = x;}
     public void setY(int y) {this.y = y;}
-    public void setWidth(int width) {this.width = width;}
-    public void setHeight(int height) {this.height = height;}
     public void setColor (Color cc) {this.cc = cc;}
     public void setDestroyed (boolean destroyed) {this.destroyed = destroyed;}
 }

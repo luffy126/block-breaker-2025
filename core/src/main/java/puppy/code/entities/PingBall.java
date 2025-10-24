@@ -3,7 +3,8 @@ package puppy.code.entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import puppy.code.block.Block;
+import puppy.code.block.Bloque;
+import puppy.code.block.BloqueNormal;
 
 public class PingBall {
 	    private int x;
@@ -68,13 +69,13 @@ public class PingBall {
 	    	return intersectaX && intersectaY;
 	    }
 
-	    public void checkCollision(Block block) {
-	        if(collidesWith(block)){
+	    public void checkCollision(Bloque bloque) {
+	        if(collidesWith(bloque)){
 	            ySpeed = - ySpeed;
-	            block.setDestroyed(true);
+	            bloque.daño();
 	        }
 	    }
-	    private boolean collidesWith(Block bb) {
+	    private boolean collidesWith(Bloque bb) {
 
 	    	boolean intersectaX = (bb.getX() + bb.getWidth() >= x-size) && (bb.getX() <= x+size);
 	        boolean intersectaY = (bb.getY() + bb.getHeight() >= y-size) && (bb.getY() <= y+size);
