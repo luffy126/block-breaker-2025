@@ -108,8 +108,6 @@ public class BlockBreakerGame extends ApplicationAdapter {
 	        	ball = new PingBall(pad.getX()+pad.getWidth()/2-5, pad.getY()+pad.getHeight()+11, 10, 5, 7, true);
 	        }
 
-
-
 	        // verificar game over
 	        if (vidas<=0) {
 	        	vidas = 3;
@@ -125,7 +123,8 @@ public class BlockBreakerGame extends ApplicationAdapter {
                 powerUps.clear();
 	        	ball = new PingBall(pad.getX()+pad.getWidth()/2-5, pad.getY()+pad.getHeight()+11, 10, 5, 7, true);
 	        }
-	        //dibujar bloques
+
+            // dibujar bloques
 	        for (Bloque b : blocks) {
                 if (!b.isDestroyed()) {
                     ball.checkCollision(b);
@@ -133,15 +132,43 @@ public class BlockBreakerGame extends ApplicationAdapter {
                 b.comportamiento(Gdx.graphics.getDeltaTime());
                 b.draw(shape);
 	        }
-	        // actualizar estado de los bloques
+
+            // actualizar estado de los bloques
 	        for (int i = 0; i < blocks.size(); i++) {
 	            Bloque b = blocks.get(i);
 	            if (b.debeEliminarse()) {
 	            	puntaje++;
+
+                    PowerUp powerUp = b.generarPowerUp();
+                    if (powerUp != null) {
+                        powerUps.add(powerUp);
+                    }
+
 	                blocks.remove(b);
 	                i--; //para no saltarse 1 tras eliminar del arraylist
 	            }
 	        }
+
+            // actualizar y dibujar powerUps
+            for (int i = 0; i < powerUps.size(); i++) {
+                PowerUp p = powerUps.get(i);
+                p.actualizarCaida(Gdx.graphics.getDeltaTime());
+
+                if (p.colisionaCon(pad.getX(), pad.getY(), pad.getWidth(), pad.getHeight())) {
+                    aplicarEfectoPowerUp(p.getTipo());
+                    powerUps.remove(i);
+                    i--;
+                    continue;
+                }
+
+                if (p.escapoDeLaPantalla()) {
+                    powerUps.remove(i);
+                    i--;
+                    continue;
+                }
+
+                p.draw(shape);
+            }
 
 	        ball.checkCollision(pad);
 	        ball.draw(shape);
@@ -167,9 +194,12 @@ public class BlockBreakerGame extends ApplicationAdapter {
         }
     }
 
-
-
 		public void dispose () {
 
 		}
 	}
+
+    /* Bugs conocidos:
+    - Problemas con el resize de ventana
+    - Collision Paddle con Pingball esta imperfecta */
+
