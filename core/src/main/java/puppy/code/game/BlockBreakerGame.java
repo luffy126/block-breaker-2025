@@ -115,12 +115,14 @@ public class BlockBreakerGame extends ApplicationAdapter {
 	        	vidas = 3;
 	        	nivel = 1;
 	        	crearBloques(2+nivel);
+                powerUps.clear();
 	        	//ball = new PingBall(pad.getX()+pad.getWidth()/2-5, pad.getY()+pad.getHeight()+11, 10, 5, 7, true);
 	        }
 	        // verificar si el nivel se terminó
 	        if (blocks.size()==0) {
 	        	nivel++;
 	        	crearBloques(2+nivel);
+                powerUps.clear();
 	        	ball = new PingBall(pad.getX()+pad.getWidth()/2-5, pad.getY()+pad.getHeight()+11, 10, 5, 7, true);
 	        }
 	        //dibujar bloques
@@ -147,7 +149,26 @@ public class BlockBreakerGame extends ApplicationAdapter {
 	        dibujaTextos();
 		}
 
-		@Override
+    private void aplicarEfectoPowerUp(PowerUp.TipoPowerUp tipo) {
+        switch (tipo) {
+            case VIDA_EXTRA:
+                vidas++;
+                break;
+            case PADDLE_GRANDE:
+                pad.setWidth(pad.getWidth() + 20);
+                break;
+            case BOLA_RAPIDA:
+                ball.setXSpeed(ball.getXSpeed() * 1.5f);
+                ball.setYSpeed(ball.getYSpeed() * 1.5f);
+                break;
+            case MULTI_BOLA:
+                puntaje += 10;
+                break;
+        }
+    }
+
+
+
 		public void dispose () {
 
 		}

@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import puppy.code.block.Bloque;
-import puppy.code.block.BloqueNormal;
 
 public class PingBall {
 	    private int x;
@@ -82,4 +81,16 @@ public class PingBall {
 	    	return intersectaX && intersectaY;
 	    }
 
-	}
+    public int getXSpeed() {
+        return xSpeed;
+    }
+    public int getYSpeed() {
+            return ySpeed;
+    }
+    public void setXSpeed(float nuevaXSpeed) {
+            xSpeed = (int)nuevaXSpeed;
+    }
+    public void setYSpeed(float nuevaYSpeed){
+            ySpeed = (int)nuevaYSpeed;
+    }
+}
