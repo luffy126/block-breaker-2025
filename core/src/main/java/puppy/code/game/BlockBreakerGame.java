@@ -1,8 +1,6 @@
 package puppy.code.game;
 
 import java.util.ArrayList;
-
-
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -17,6 +15,7 @@ import puppy.code.block.BloqueNormal;
 import puppy.code.block.BloqueRegen;
 import puppy.code.entities.Paddle;
 import puppy.code.entities.PingBall;
+import puppy.code.entities.PowerUp;
 
 
 public class BlockBreakerGame extends ApplicationAdapter {
@@ -30,6 +29,7 @@ public class BlockBreakerGame extends ApplicationAdapter {
 	private int vidas;
 	private int puntaje;
 	private int nivel;
+    private ArrayList<PowerUp> powerUps = new ArrayList<>();
 
 		@Override
 		public void create () {
@@ -107,6 +107,9 @@ public class BlockBreakerGame extends ApplicationAdapter {
 	        	//nivel = 1;
 	        	ball = new PingBall(pad.getX()+pad.getWidth()/2-5, pad.getY()+pad.getHeight()+11, 10, 5, 7, true);
 	        }
+
+
+
 	        // verificar game over
 	        if (vidas<=0) {
 	        	vidas = 3;
