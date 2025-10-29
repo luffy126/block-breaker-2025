@@ -1,53 +1,32 @@
 package puppy.code.entities;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import puppy.code.game.BlockBreakerGame;
 import puppy.code.interfaces.ConCaida;
 
+public abstract class PowerUp implements ConCaida {
 
-// El PowerUp esta diseñado pensando que cae desde donde se destruyó un bloque.
-
-public class PowerUp implements ConCaida {
-
-    private int x, y;
-    private int width, height;
-    private Color color;
-    private float velocidadCaida;
-    private boolean cayendo;
-    private TipoPowerUp tipo;
+    protected int x, y;
+    protected int width, height;
+    protected Color color;
+    protected float velocidadCaida;
+    protected boolean cayendo;
 
     private static final float VELOCIDAD_CAIDA_INICIAL = -150f;
     private static final float ACELERACION_GRAVEDAD = -200f;
     private static final float VELOCIDAD_MAXIMA = -400f;
 
-    public enum TipoPowerUp {
-        VIDA_EXTRA(Color.RED),
-        PADDLE_GRANDE(Color.BLUE),
-        BOLA_RAPIDA(Color.YELLOW),
-        MULTI_BOLA(Color.PURPLE);
-
-        private final Color color;
-
-        TipoPowerUp(Color color) {
-            this.color = color;
-        }
-
-        public Color getColor() {
-            return color;
-        }
-    }
-
-    public PowerUp(int x, int y, TipoPowerUp tipo) {
+    public PowerUp(int x, int y, Color color) {
         this.x = x;
         this.y = y;
         this.width = 20;
         this.height = 20;
-        this.tipo = tipo;
-        this.color = tipo.getColor();
+        this.color = color;
         this.velocidadCaida = VELOCIDAD_CAIDA_INICIAL;
         this.cayendo = false;
     }
+    public abstract void aplicarEfecto(BlockBreakerGame game); //Aqui ya si, esta la herencia y la implicancia de usar abstract para los tipos.
 
     @Override
     public void iniciarCaida() {
@@ -80,6 +59,9 @@ public class PowerUp implements ConCaida {
         return cayendo;
     }
 
+    public int getX() {
+        return x;
+    }
     @Override
     public int getY() {
         return y;
@@ -116,14 +98,6 @@ public class PowerUp implements ConCaida {
             y + height > paddleY;
     }
 
-    public TipoPowerUp getTipo() {
-        return tipo;
-    }
-
-    public int getX() {
-        return x;
-    }
-
     public int getWidth() {
         return width;
     }
@@ -131,4 +105,5 @@ public class PowerUp implements ConCaida {
     public int getHeight() {
         return height;
     }
+
 }
