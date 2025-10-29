@@ -6,10 +6,13 @@ import puppy.code.interfaces.Dañable;
 
 import java.util.Random;
 
+import static com.badlogic.gdx.math.MathUtils.random;
+
 public abstract class Bloque implements Dañable {
-    protected int x,y,width,height;
+    protected int x, y, width, height;
     protected Color cc;
     protected boolean destroyed;
+    protected static final Random random = new Random();
 
     public Bloque(int x, int y, int width, int height, Color color) {
         this.x = x;
@@ -27,9 +30,8 @@ public abstract class Bloque implements Dañable {
         }
     }
 
-    public boolean debeEliminarse() {
-        return destroyed;
-    }
+    public boolean debeEliminarse() {return destroyed;}
+
 
     public abstract void comportamiento(float delta);
 
