@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import puppy.code.block.*;
 import puppy.code.entities.*;
+import puppy.code.powerups.PowerUp;
+import puppy.code.factories.PowerUpFactory;
 
 public class BlockBreakerGame extends ApplicationAdapter {
     private OrthographicCamera camera;

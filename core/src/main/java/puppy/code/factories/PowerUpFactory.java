@@ -1,5 +1,7 @@
 
-package puppy.code.entities;
+package puppy.code.factories;
+
+import puppy.code.powerups.*;
 
 import java.util.Random;
 

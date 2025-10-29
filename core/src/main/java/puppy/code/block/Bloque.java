@@ -2,7 +2,6 @@ package puppy.code.block;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import puppy.code.entities.PowerUp;
 import puppy.code.interfaces.Dañable;
 
 import java.util.Random;

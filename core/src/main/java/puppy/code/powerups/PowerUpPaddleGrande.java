@@ -1,4 +1,4 @@
-package puppy.code.entities;
+package puppy.code.powerups;
 
 import com.badlogic.gdx.graphics.Color;
 import puppy.code.game.BlockBreakerGame;
