@@ -105,5 +105,4 @@ public abstract class PowerUp implements ConCaida {
     public int getHeight() {
         return height;
     }
-
 }

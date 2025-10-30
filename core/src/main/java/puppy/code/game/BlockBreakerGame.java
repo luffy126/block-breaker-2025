@@ -118,7 +118,8 @@ public class BlockBreakerGame extends ApplicationAdapter {
             powerUps.clear();
         }
 
-        if (blocks.size() == 0) {
+        boolean todosDestruidos = blocks.stream().noneMatch(Bloque::estaActivo);
+        if (todosDestruidos) {
             nivel++;
             crearBloques(2 + nivel);
             powerUps.clear();
@@ -182,17 +183,16 @@ public class BlockBreakerGame extends ApplicationAdapter {
         vidas++;
     }
 
-    public void agrandarPaddle(int cantidad) {
-        pad.setWidth(pad.getWidth() + cantidad);
-    }
-
-    public void acelerarBola(float multiplicador) {
-        ball.setXSpeed(ball.getXSpeed() * multiplicador);
-        ball.setYSpeed(ball.getYSpeed() * multiplicador);
-    }
-
     public void addPuntos(int puntos) {
         puntaje += puntos;
+    }
+
+    public Paddle getPaddle() {
+        return pad;
+    }
+
+    public PingBall getPingBall() {
+        return ball;
     }
 
     @Override
