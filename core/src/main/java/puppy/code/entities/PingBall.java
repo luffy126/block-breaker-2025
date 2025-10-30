@@ -1,6 +1,7 @@
 package puppy.code.entities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import puppy.code.block.Bloque;
@@ -13,6 +14,7 @@ public class PingBall {
 	    private int ySpeed;
 	    private Color color = Color.WHITE;
 	    private boolean estaQuieto;
+        Sound sonidoGolpe = Gdx.audio.newSound(Gdx.files.internal("audios/hit.wav"));
 
 	    public PingBall(int x, int y, int size, int xSpeed, int ySpeed, boolean iniciaQuieto) {
 	        this.x = x;
@@ -72,6 +74,7 @@ public class PingBall {
 	        if(collidesWith(bloque)){
 	            ySpeed = - ySpeed;
 	            bloque.daño();
+                sonidoGolpe.play();
 	        }
 	    }
 	    private boolean collidesWith(Bloque bb) {

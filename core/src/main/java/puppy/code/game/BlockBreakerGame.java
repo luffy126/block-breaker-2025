@@ -5,6 +5,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -40,6 +41,8 @@ public class BlockBreakerGame extends ApplicationAdapter {
         crearBloques(2+nivel);
 
         Music musicaFondo = Gdx.audio.newMusic(Gdx.files.internal("audios/background-music.mp3"));
+
+
         musicaFondo.setLooping(true);
         musicaFondo.setVolume(0.8f);
         musicaFondo.play();
