@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -37,6 +38,11 @@ public class BlockBreakerGame extends ApplicationAdapter {
         font.getData().setScale(3, 2);
         nivel = 1;
         crearBloques(2+nivel);
+
+        Music musicaFondo = Gdx.audio.newMusic(Gdx.files.internal("audios/background-music.mp3"));
+        musicaFondo.setLooping(true);
+        musicaFondo.setVolume(0.8f);
+        musicaFondo.play();
 
         shape = new ShapeRenderer();
         ball = new PingBall(Gdx.graphics.getWidth()/2-10, 41, 10, 5, 7, true);
