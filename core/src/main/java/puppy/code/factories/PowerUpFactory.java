@@ -1,13 +1,10 @@
-
 package puppy.code.factories;
-
 import puppy.code.powerups.*;
-
 import java.util.Random;
 
 public class PowerUpFactory {
     private static final Random random = new Random();
-    private static final float PROBABILIDAD_POWERUP = 0.50f;
+    private static final float PROBABILIDAD_POWERUP = 0.5f;
 
     public static PowerUp intentarGenerar(int x, int y) {
         if (random.nextFloat() >= PROBABILIDAD_POWERUP) {
