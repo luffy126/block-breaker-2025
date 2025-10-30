@@ -58,8 +58,9 @@ public class PingBall extends SonidoFactory {
 
 	    public void checkCollision(Paddle paddle) {
 	        if(collidesWith(paddle)){
-	            color = Color.GREEN;
+	            color = Color.RED;
 	            ySpeed = -ySpeed;
+                gestorSonido.reproducirGolpeBola();
 	        }
 	        else{
 	            color = Color.WHITE;
