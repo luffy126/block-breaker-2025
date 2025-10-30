@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -13,7 +15,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import puppy.code.block.*;
 import puppy.code.entities.*;
 import puppy.code.powerups.PowerUp;
-import puppy.code.factories.PowerUpFactory;
+import puppy.code.factories.*;
 
 public class BlockBreakerGame extends ApplicationAdapter {
     private OrthographicCamera camera;
@@ -27,9 +29,11 @@ public class BlockBreakerGame extends ApplicationAdapter {
     private int puntaje;
     private int nivel;
     private ArrayList<PowerUp> powerUps = new ArrayList<>();
-
+    private SonidoFactory gestorAudio;
     @Override
+
     public void create () {
+        gestorAudio = new SonidoFactory();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
         batch = new SpriteBatch();
@@ -37,6 +41,8 @@ public class BlockBreakerGame extends ApplicationAdapter {
         font.getData().setScale(3, 2);
         nivel = 1;
         crearBloques(2+nivel);
+
+        gestorAudio.reproducirMusicaDeFondo();
 
         shape = new ShapeRenderer();
         ball = new PingBall(Gdx.graphics.getWidth()/2-10, 41, 10, 5, 7, true);
@@ -151,6 +157,7 @@ public class BlockBreakerGame extends ApplicationAdapter {
 
             if (p.colisionaCon(pad.getX(), pad.getY(), pad.getWidth(), pad.getHeight())) {
                 p.aplicarEfecto(this);
+                gestorAudio.reproducirPowerUp();
                 powerUps.remove(i);
                 i--;
                 continue;

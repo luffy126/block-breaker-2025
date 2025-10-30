@@ -1,11 +1,13 @@
 package puppy.code.entities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import puppy.code.block.Bloque;
+import puppy.code.factories.SonidoFactory;
 
-public class PingBall {
+public class PingBall extends SonidoFactory {
 	    private int x;
 	    private int y;
 	    private int size;
@@ -13,6 +15,7 @@ public class PingBall {
 	    private int ySpeed;
 	    private Color color = Color.WHITE;
 	    private boolean estaQuieto;
+        private SonidoFactory gestorSonido;
 
 	    public PingBall(int x, int y, int size, int xSpeed, int ySpeed, boolean iniciaQuieto) {
 	        this.x = x;
@@ -21,6 +24,7 @@ public class PingBall {
 	        this.xSpeed = xSpeed;
 	        this.ySpeed = ySpeed;
 	        estaQuieto = iniciaQuieto;
+            gestorSonido = new SonidoFactory();
 	    }
 
 	    public boolean estaQuieto() {
@@ -54,8 +58,9 @@ public class PingBall {
 
 	    public void checkCollision(Paddle paddle) {
 	        if(collidesWith(paddle)){
-	            color = Color.GREEN;
+	            color = Color.RED;
 	            ySpeed = -ySpeed;
+                gestorSonido.reproducirGolpeBola();
 	        }
 	        else{
 	            color = Color.WHITE;
@@ -72,6 +77,7 @@ public class PingBall {
 	        if(collidesWith(bloque)){
 	            ySpeed = - ySpeed;
 	            bloque.daño();
+                gestorSonido.reproducirGolpeBola();
 	        }
 	    }
 	    private boolean collidesWith(Bloque bb) {

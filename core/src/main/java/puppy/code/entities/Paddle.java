@@ -30,7 +30,7 @@ public class Paddle {
     }
 
 	public void draw(ShapeRenderer shape){
-        shape.setColor(Color.BLUE);
+        shape.setColor(Color.RED);
         int x2 = x; //= Gdx.input.getX();
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) x2 =x-15;
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) x2=x+15;
@@ -40,6 +40,4 @@ public class Paddle {
         }
         shape.rect(x, y, width, height);
     }
-
-
 }

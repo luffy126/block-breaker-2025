@@ -15,7 +15,7 @@ public abstract class PowerUp implements ConCaida {
 
     private static final float VELOCIDAD_CAIDA_INICIAL = -150f;
     private static final float ACELERACION_GRAVEDAD = -200f;
-    private static final float VELOCIDAD_MAXIMA = -400f;
+    private static final float VELOCIDAD_MAXIMA = -350f;
 
     public PowerUp(int x, int y, Color color) {
         this.x = x;
