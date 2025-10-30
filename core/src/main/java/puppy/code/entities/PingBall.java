@@ -99,4 +99,10 @@ public class PingBall extends SonidoFactory {
     public void setYSpeed(float nuevaYSpeed){
             ySpeed = (int)nuevaYSpeed;
     }
+
+    public void acelerar(float multiplicador) {
+        this.xSpeed = (int)(this.xSpeed * multiplicador);
+        this.ySpeed = (int)(this.ySpeed * multiplicador);
+    }
+
 }

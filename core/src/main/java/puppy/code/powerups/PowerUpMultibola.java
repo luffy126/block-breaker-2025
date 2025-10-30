@@ -2,8 +2,9 @@ package puppy.code.powerups;
 
 import com.badlogic.gdx.graphics.Color;
 import puppy.code.game.BlockBreakerGame;
+import puppy.code.interfaces.ConCaida;
 
-public class PowerUpMultibola extends PowerUp {
+public class PowerUpMultibola extends PowerUp implements ConCaida {
 
     public PowerUpMultibola(int x, int y) {
         super(x, y, Color.PURPLE);

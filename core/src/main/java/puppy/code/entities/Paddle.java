@@ -29,7 +29,7 @@ public class Paddle {
         this.height = nuevoAlto;
     }
 
-	public void draw(ShapeRenderer shape){
+    public void draw(ShapeRenderer shape){
         shape.setColor(Color.RED);
         int x2 = x; //= Gdx.input.getX();
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) x2 =x-15;
@@ -39,5 +39,9 @@ public class Paddle {
             x = x2;
         }
         shape.rect(x, y, width, height);
+    }
+
+    public void agrandar(int cantidad) {
+        this.width += cantidad;
     }
 }

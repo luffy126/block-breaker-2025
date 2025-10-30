@@ -32,6 +32,10 @@ public abstract class Bloque implements Dañable {
 
     public boolean debeEliminarse() {return destroyed;}
 
+    @Override
+    public boolean estaActivo() {
+        return !destroyed;
+    }
 
     public abstract void comportamiento(float delta);
 

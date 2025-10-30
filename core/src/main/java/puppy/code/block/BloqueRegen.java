@@ -6,7 +6,7 @@ import puppy.code.interfaces.Dañable;
 public class BloqueRegen extends Bloque implements Dañable {
 
     private float timerRegen = 0f;
-    private final float TIEMPO_REGEN = 15f;
+    private final float TIEMPO_REGEN = 18f;
 
     public BloqueRegen (int x, int y, int width, int height) {
         super(x, y, width, height, Color.GREEN);
