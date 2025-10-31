@@ -5,11 +5,17 @@ Un juego estilo retro en Java, todo WIP por ahora
 
 ### Requisitos
 
-- Java 17 o superior instalado y seteado como default
+- Java 17 o superior instalado y seteado como default (puedes revisar tu versión actual usando `java -version`
 - Teclado y monitor, se asume que los tienes
 
 ### Para correr el juego:
+**Windows Opción 1:**
+- Abrir PowerShell y dentro de este ejecutar los siguientes comandos:
+- `git clone https://github.com/luffy126/block-breaker-2025.git`
+- `cd block-breaker-2025`
+- `./gradlew run`
 
+**Windows Opción 2 (esencialmente la misma pero más visual):**
 - Descargar el .zip disponible en la pestaña Code del repositorio
 - Extraer con WinRAR o 7zip
 - Entrar a la carpeta del proyecto donde está el archivo gradlew
@@ -17,13 +23,21 @@ Un juego estilo retro en Java, todo WIP por ahora
 - Abrir PowerShell y dentro de este colocar el siguiente comando: `cd C:\Ruta\A\Tu\Directorio`
 - Luego de esto ejecutar `./gradlew run`
 
+**Linux:** 
+- Abrir la terminal del sistema y colocar los siguientes comandos:
+- `git clone https://github.com/luffy126/block-breaker-2025.git`
+- `cd block-breaker-2025`
+- `./gradlew run`
+
+En caso de que salga error de permiso al ejecutar `./gradlew run` ejecutar el siguiente comando: `chmod +x gradlew`
+
 ### Para echar a andar el proyecto:
 
 - Usar IntelliJ preferentemente, descargar la carpeta y después importarla como proyecto
 - en IntelliJ abrir File>Project Structure
 - Dentro de la sección Project seleccionar el SDK **Corretto 17** (si no aparece en la lista clickear "Download JDK..." y seleccionar la version 17 y en vendor Amazon Corretto) y en Language level seleccionar el 17
-- En el archivo gradle.properties cambiar la linea de open.gradle.java.home y cambiar la ruta que aparece por la ruta donde está instalado el JDK 17 
-- Finalmente seleccionar el archivo gradlew sin extension y ejecutarlo con el botón verde de arriba a la derecha o dandole a enter
+- ~~En el archivo gradle.properties cambiar la linea de open.gradle.java.home y cambiar la ruta que aparece por la ruta donde está instalado el JDK 17~~
+- ~~Finalmente seleccionar el archivo gradlew sin extension y ejecutarlo con el botón verde de arriba a la derecha o dandole a enter~~
 - Si aparece un error en la consola **POR EL AMOR DE DIOS AVISEN!!!!** por discord o por whatsapp eso jeje
 
 Abajo hay cosas utiles del mismo gradle para debug y tal pero eso cualquier cosa que vayan a hacer por favor avisen la comunicación es clave ahora
