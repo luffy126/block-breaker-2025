@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import puppy.code.block.*;
 import puppy.code.entities.*;
 import puppy.code.powerups.PowerUp;
@@ -19,6 +21,7 @@ import puppy.code.factories.*;
 
 public class BlockBreakerGame extends ApplicationAdapter {
     private OrthographicCamera camera;
+    private Viewport viewport;
     private SpriteBatch batch;
     private BitmapFont font;
     private ShapeRenderer shape;
@@ -30,53 +33,66 @@ public class BlockBreakerGame extends ApplicationAdapter {
     private int nivel;
     private ArrayList<PowerUp> powerUps = new ArrayList<>();
     private SonidoFactory gestorAudio;
+    static final String RUTA_BLOQUE_DEFAULT = "bloques/default.png";
+    static final String RUTA_BLOQUE_DURO = "bloques/duro.png";
+    static final String RUTA_BLOQUE_REGEN = "bloques/regen.png";
+
     @Override
 
     public void create () {
-        gestorAudio = new SonidoFactory();
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 480);
-        batch = new SpriteBatch();
-        font = new BitmapFont();
+        gestorAudio = new SonidoFactory(); // sonido
+
+        camera = new OrthographicCamera(); // camara
+        // camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        viewport = new FitViewport(800, 480, camera);
+        viewport.apply();
+
+        batch = new SpriteBatch(); // texturas
+
+        font = new BitmapFont(); // texto
         font.getData().setScale(3, 2);
-        nivel = 1;
-        crearBloques(2+nivel);
+
+        nivel = 1; // nivel
+
+        crearBloques(2+nivel); // bloques
 
         gestorAudio.reproducirMusicaDeFondo();
 
         shape = new ShapeRenderer();
-        ball = new PingBall(Gdx.graphics.getWidth()/2-10, 41, 10, 5, 7, true);
-        pad = new Paddle(Gdx.graphics.getWidth()/2-50,40,100,10);
+        ball = new PingBall(800/2-10, 41, 10, 5, 7, true);
+        pad = new Paddle(800/2-50,40,100,10);
         vidas = 3;
         puntaje = 0;
+        camera.position.set(400, 240, 0);
+        camera.update();
     }
 
     public void crearBloques(int filas) {
         blocks.clear();
         int blockWidth = 70;
         int blockHeight = 26;
-        int y = Gdx.graphics.getHeight();
+        int y = 480;
 
         java.util.Random random = new java.util.Random();
 
         for (int cont = 0; cont < filas; cont++) {
             y -= blockHeight + 10;
-
-            for (int x = 5; x < Gdx.graphics.getWidth(); x += blockWidth + 10) {
+            for (int x = 5; x < 800; x += blockWidth + 10) {
                 int tipoBloque = random.nextInt(3);
                 Bloque bloque;
 
                 switch (tipoBloque) {
                     case 0:
-                        bloque = new BloqueDuro(x, y, blockWidth, blockHeight);
+                        bloque = new BloqueDuro(x, y, blockWidth, blockHeight, RUTA_BLOQUE_DURO);
                         break;
 
                     case 1:
-                        bloque = new BloqueRegen(x, y, blockWidth, blockHeight);
+                        bloque = new BloqueRegen(x, y, blockWidth, blockHeight, RUTA_BLOQUE_REGEN);
                         break;
 
                     default:
-                        bloque = new BloqueNormal(x, y, blockWidth, blockHeight);
+                        bloque = new BloqueNormal(x, y, blockWidth, blockHeight, RUTA_BLOQUE_DEFAULT);
                         break;
                 }
                 blocks.add(bloque);
@@ -87,17 +103,43 @@ public class BlockBreakerGame extends ApplicationAdapter {
     public void dibujaTextos() {
         camera.update();
         batch.setProjectionMatrix(camera.combined);
+
+        float left = viewport.getCamera().position.x - viewport.getWorldWidth() / 2f;
+        float bottom = viewport.getCamera().position.y - viewport.getWorldHeight() / 2f;
+        float right = left + viewport.getWorldWidth();
+
         batch.begin();
-        font.draw(batch, "Puntos: " + puntaje, 10, 25);
-        font.draw(batch, "Vidas : " + vidas, Gdx.graphics.getWidth()-20, 25);
+        font.draw(batch, "Puntos: " + puntaje, left + 10, bottom + 30);
+        font.draw(batch, "Vidas : " + vidas, right - 200, bottom + 30);
+        batch.end();
+    }
+
+    public void dibujaBloques() {
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        for (Bloque b : blocks) {
+            if (!b.isDestroyed()) {
+                ball.checkCollision(b);
+            }
+            b.comportamiento(Gdx.graphics.getDeltaTime());
+            b.draw(batch); // ahora con SpriteBatch
+        }
         batch.end();
     }
 
     @Override
     public void render () {
+        viewport.apply();
+        camera.update();
+
+        batch.setProjectionMatrix(camera.combined);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         shape.begin(ShapeRenderer.ShapeType.Filled);
         pad.draw(shape);
+        System.out.println("Cam pos: " + camera.position);
+
 
         if (ball.estaQuieto()) {
             ball.setXY(pad.getX() + pad.getWidth() / 2 - 5, pad.getY() + pad.getHeight() + 11);
@@ -126,13 +168,13 @@ public class BlockBreakerGame extends ApplicationAdapter {
             ball = new PingBall(pad.getX() + pad.getWidth() / 2 - 5, pad.getY() + pad.getHeight() + 11, 10, 5, 7, true);
         }
 
-        for (Bloque b : blocks) {
+        /* for (Bloque b : blocks) {
             if (!b.isDestroyed()) {
                 ball.checkCollision(b);
             }
             b.comportamiento(Gdx.graphics.getDeltaTime());
             b.draw(shape);
-        }
+        } */
 
         for (int i = 0; i < blocks.size(); i++) {
             Bloque b = blocks.get(i);
@@ -177,6 +219,7 @@ public class BlockBreakerGame extends ApplicationAdapter {
         ball.draw(shape);
         shape.end();
         dibujaTextos();
+        dibujaBloques();
     }
 
     public void addVida() {
@@ -193,6 +236,11 @@ public class BlockBreakerGame extends ApplicationAdapter {
 
     public PingBall getPingBall() {
         return ball;
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height, true);
     }
 
     @Override

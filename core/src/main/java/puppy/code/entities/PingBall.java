@@ -48,10 +48,10 @@ public class PingBall extends SonidoFactory {
 	    	if (estaQuieto) return;
 	        x += xSpeed;
 	        y += ySpeed;
-	        if (x-size < 0 || x+size > Gdx.graphics.getWidth()) {
+	        if (x-size < 0 || x+size > 800) {
 	            xSpeed = -xSpeed;
 	        }
-	        if (y+size > Gdx.graphics.getHeight()) {
+	        if (y+size > 480) {
 	            ySpeed = -ySpeed;
 	        }
 	    }

@@ -5,8 +5,8 @@ import puppy.code.interfaces.Dañable;
 
 public class BloqueNormal extends Bloque implements Dañable {
 
-    public BloqueNormal(int x, int y, int width, int height) {
-        super(x, y, width, height, Color.CYAN);
+    public BloqueNormal(int x, int y, int width, int height, String rutaTexturaNormal) {
+        super(x, y, width, height, rutaTexturaNormal);
     }
 
     @Override
