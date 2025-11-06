@@ -20,6 +20,11 @@ import puppy.code.powerups.PowerUp;
 import puppy.code.factories.*;
 
 public class BlockBreakerGame extends ApplicationAdapter {
+    static final String RUTA_BLOQUE_DEFAULT = "bloques/default.png";
+    static final String RUTA_BLOQUE_DURO = "bloques/duro.png";
+    static final String RUTA_BLOQUE_REGEN = "bloques/regen.png";
+    public static final int ANCHO_VENTANA = 1024;
+    public static final int ALTO_VENTANA = 768;
     private OrthographicCamera camera;
     private Viewport viewport;
     private SpriteBatch batch;
@@ -33,9 +38,6 @@ public class BlockBreakerGame extends ApplicationAdapter {
     private int nivel;
     private ArrayList<PowerUp> powerUps = new ArrayList<>();
     private SonidoFactory gestorAudio;
-    static final String RUTA_BLOQUE_DEFAULT = "bloques/default.png";
-    static final String RUTA_BLOQUE_DURO = "bloques/duro.png";
-    static final String RUTA_BLOQUE_REGEN = "bloques/regen.png";
 
     @Override
 
@@ -43,9 +45,8 @@ public class BlockBreakerGame extends ApplicationAdapter {
         gestorAudio = new SonidoFactory(); // sonido
 
         camera = new OrthographicCamera(); // camara
-        // camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        viewport = new FitViewport(800, 480, camera);
+        viewport = new FitViewport(ANCHO_VENTANA, ALTO_VENTANA, camera);
         viewport.apply();
 
         batch = new SpriteBatch(); // texturas
@@ -60,8 +61,8 @@ public class BlockBreakerGame extends ApplicationAdapter {
         gestorAudio.reproducirMusicaDeFondo();
 
         shape = new ShapeRenderer();
-        ball = new PingBall(800/2-10, 41, 10, 5, 7, true);
-        pad = new Paddle(800/2-50,40,100,10);
+        ball = new PingBall(ANCHO_VENTANA/2-10, 41, 10, 5, 7, true);
+        pad = new Paddle(ANCHO_VENTANA/2-50,40,160,10);
         vidas = 3;
         puntaje = 0;
         camera.position.set(400, 240, 0);
@@ -70,15 +71,17 @@ public class BlockBreakerGame extends ApplicationAdapter {
 
     public void crearBloques(int filas) {
         blocks.clear();
-        int blockWidth = 70;
-        int blockHeight = 26;
-        int y = 480;
+        int blockWidth = 117;
+        int blockHeight = 45;
+        int espacio = 10;
+        int margen = (ANCHO_VENTANA - (blockWidth * 8 + espacio * 7)) / 2; // centrado automático
+        int y = ALTO_VENTANA;
 
         java.util.Random random = new java.util.Random();
 
         for (int cont = 0; cont < filas; cont++) {
             y -= blockHeight + 10;
-            for (int x = 5; x < 800; x += blockWidth + 10) {
+            for (int x = margen; x < ANCHO_VENTANA - margen; x += blockWidth + espacio) {
                 int tipoBloque = random.nextInt(3);
                 Bloque bloque;
 
@@ -86,11 +89,9 @@ public class BlockBreakerGame extends ApplicationAdapter {
                     case 0:
                         bloque = new BloqueDuro(x, y, blockWidth, blockHeight, RUTA_BLOQUE_DURO);
                         break;
-
                     case 1:
                         bloque = new BloqueRegen(x, y, blockWidth, blockHeight, RUTA_BLOQUE_REGEN);
                         break;
-
                     default:
                         bloque = new BloqueNormal(x, y, blockWidth, blockHeight, RUTA_BLOQUE_DEFAULT);
                         break;
@@ -138,8 +139,6 @@ public class BlockBreakerGame extends ApplicationAdapter {
 
         shape.begin(ShapeRenderer.ShapeType.Filled);
         pad.draw(shape);
-        System.out.println("Cam pos: " + camera.position);
-
 
         if (ball.estaQuieto()) {
             ball.setXY(pad.getX() + pad.getWidth() / 2 - 5, pad.getY() + pad.getHeight() + 11);

@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import puppy.code.block.Bloque;
 import puppy.code.factories.SonidoFactory;
 
+import static puppy.code.game.BlockBreakerGame.ALTO_VENTANA;
+import static puppy.code.game.BlockBreakerGame.ANCHO_VENTANA;
+
 public class PingBall extends SonidoFactory {
 	    private int x;
 	    private int y;
@@ -48,10 +51,10 @@ public class PingBall extends SonidoFactory {
 	    	if (estaQuieto) return;
 	        x += xSpeed;
 	        y += ySpeed;
-	        if (x-size < 0 || x+size > 800) {
+	        if (x-size < 0 || x+size > ANCHO_VENTANA) {
 	            xSpeed = -xSpeed;
 	        }
-	        if (y+size > 480) {
+	        if (y+size > ALTO_VENTANA) {
 	            ySpeed = -ySpeed;
 	        }
 	    }
