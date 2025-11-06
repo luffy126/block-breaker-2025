@@ -64,7 +64,18 @@ public class PingBall extends SonidoFactory {
 	            color = Color.RED;
 	            ySpeed = -ySpeed;
                 gestorSonido.reproducirGolpeBola();
-	        }
+
+                int centroPaddle = paddle.getX() + paddle.getWidth() / 2;
+                int distancia = x - centroPaddle;
+
+                // Factor de control del ángulo: cuanto mayor, más se desvía horizontalmente
+                float factor = 0.15f;
+                xSpeed = (int)(distancia * factor);
+
+                // Evitar que xSpeed sea cero (rebote completamente vertical)
+                if (xSpeed == 0) xSpeed = (Math.random() < 0.5) ? -3 : 3;
+
+            }
 	        else{
 	            color = Color.WHITE;
 	        }

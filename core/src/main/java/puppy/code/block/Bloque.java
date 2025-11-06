@@ -1,5 +1,6 @@
 package puppy.code.block;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -52,4 +53,8 @@ public abstract class Bloque implements Dañable {
     public void setY(int y) {this.y = y;}
     //public void setColor (Color cc) {this.cc = cc;}
     public void setDestroyed (boolean destroyed) {this.destroyed = destroyed;}
+    public void setTexture(String ruta) {
+        if (texture != null) texture.dispose();
+        texture = new Texture(Gdx.files.internal(ruta));
+    }
 }

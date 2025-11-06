@@ -74,15 +74,25 @@ public class BlockBreakerGame extends ApplicationAdapter {
         int blockWidth = 117;
         int blockHeight = 45;
         int espacio = 10;
-        int margen = (ANCHO_VENTANA - (blockWidth * 8 + espacio * 7)) / 2; // centrado automático
+        int margen = (ANCHO_VENTANA - (blockWidth * 8 + espacio * 7)) / 2;
         int y = ALTO_VENTANA;
-
+        int tipoBloque;
         java.util.Random random = new java.util.Random();
 
         for (int cont = 0; cont < filas; cont++) {
             y -= blockHeight + 10;
             for (int x = margen; x < ANCHO_VENTANA - margen; x += blockWidth + espacio) {
-                int tipoBloque = random.nextInt(3);
+
+                int chance = random.nextInt(100); // valor entre 0 y 99
+
+                if (chance < 10) {          // 10% → Regen
+                    tipoBloque = 1;
+                } else if (chance < 40) {   // 30% → Duro
+                    tipoBloque = 0;
+                } else {                    // 60% → Normal
+                    tipoBloque = 2;
+                }
+
                 Bloque bloque;
 
                 switch (tipoBloque) {
