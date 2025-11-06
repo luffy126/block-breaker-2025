@@ -8,6 +8,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -38,6 +39,10 @@ public class BlockBreakerGame extends ApplicationAdapter {
     private int nivel;
     private ArrayList<PowerUp> powerUps = new ArrayList<>();
     private SonidoFactory gestorAudio;
+    private Texture fondo;
+    private float fondoScrollX = 0f;
+    private float fondoScrollY = 0f;
+    private final float FONDO_VELOCIDAD = 1f; // píxeles por segundo
 
     @Override
 
@@ -59,6 +64,9 @@ public class BlockBreakerGame extends ApplicationAdapter {
         crearBloques(2+nivel); // bloques
 
         gestorAudio.reproducirMusicaDeFondo();
+
+        fondo = new Texture(Gdx.files.internal("fondos/bg_tile1.png"));
+        fondo.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
         shape = new ShapeRenderer();
         ball = new PingBall(ANCHO_VENTANA/2-10, 41, 10, 5, 7, true);
@@ -139,13 +147,32 @@ public class BlockBreakerGame extends ApplicationAdapter {
         batch.end();
     }
 
+    public void dibujaFondo() {
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        batch.draw(
+            fondo,
+            0, 0,
+            ANCHO_VENTANA, ALTO_VENTANA,
+            fondoScrollX, fondoScrollY,
+            fondoScrollX + ANCHO_VENTANA / fondo.getWidth(),
+            fondoScrollY + ALTO_VENTANA / fondo.getHeight()
+        );
+        batch.end();
+    }
+
     @Override
     public void render () {
         viewport.apply();
         camera.update();
 
+        fondoScrollX += Gdx.graphics.getDeltaTime() * FONDO_VELOCIDAD;
+        fondoScrollY += Gdx.graphics.getDeltaTime() * FONDO_VELOCIDAD * 0.5f;
+
         batch.setProjectionMatrix(camera.combined);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        dibujaFondo();
 
         shape.begin(ShapeRenderer.ShapeType.Filled);
         pad.draw(shape);
