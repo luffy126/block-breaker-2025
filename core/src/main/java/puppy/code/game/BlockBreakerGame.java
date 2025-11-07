@@ -24,6 +24,7 @@ public class BlockBreakerGame extends ApplicationAdapter {
     static final String RUTA_BLOQUE_DEFAULT = "bloques/default.png";
     static final String RUTA_BLOQUE_DURO = "bloques/duro.png";
     static final String RUTA_BLOQUE_REGEN = "bloques/regen.png";
+    static final String RUTA_BLOQUE_EXPLOSIVO = "bloques/explosivo.png";
     public static final int ANCHO_VENTANA = 1024;
     public static final int ALTO_VENTANA = 768;
     private OrthographicCamera camera;
@@ -31,7 +32,7 @@ public class BlockBreakerGame extends ApplicationAdapter {
     private SpriteBatch batch;
     private BitmapFont font;
     private ShapeRenderer shape;
-    private PingBall ball;
+    private ArrayList<PingBall> balls = new ArrayList<>();
     private Paddle pad;
     private ArrayList<Bloque> blocks = new ArrayList<>();
     private int vidas;
@@ -69,7 +70,7 @@ public class BlockBreakerGame extends ApplicationAdapter {
         fondo.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
         shape = new ShapeRenderer();
-        ball = new PingBall(ANCHO_VENTANA/2-10, 41, 10, 5, 7, true);
+        balls.add(new PingBall(ANCHO_VENTANA/2-10, 41, 10, 5, 7, true));
         pad = new Paddle(ANCHO_VENTANA/2-50,40,160,10);
         vidas = 3;
         puntaje = 0;
@@ -95,10 +96,13 @@ public class BlockBreakerGame extends ApplicationAdapter {
 
                 if (chance < 10) {          // 10% → Regen
                     tipoBloque = 1;
-                } else if (chance < 40) {   // 30% → Duro
+                } else if (chance < 30) {   // 20% → Duro
                     tipoBloque = 0;
-                } else {                    // 60% → Normal
+                } else if (chance < 40) {   // 10% → Explosivo
                     tipoBloque = 2;
+                } else {
+                    tipoBloque = 3;
+
                 }
 
                 Bloque bloque;
@@ -109,6 +113,9 @@ public class BlockBreakerGame extends ApplicationAdapter {
                         break;
                     case 1:
                         bloque = new BloqueRegen(x, y, blockWidth, blockHeight, RUTA_BLOQUE_REGEN);
+                        break;
+                    case 2:
+                        bloque = new BloqueExplosion(x, y, blockWidth, blockHeight, RUTA_BLOQUE_EXPLOSIVO, blocks);
                         break;
                     default:
                         bloque = new BloqueNormal(x, y, blockWidth, blockHeight, RUTA_BLOQUE_DEFAULT);
@@ -139,7 +146,9 @@ public class BlockBreakerGame extends ApplicationAdapter {
         batch.begin();
         for (Bloque b : blocks) {
             if (!b.isDestroyed()) {
-                ball.checkCollision(b);
+                for (PingBall bola : balls) {
+                    bola.checkCollision(b);
+                }
             }
             b.comportamiento(Gdx.graphics.getDeltaTime());
             b.draw(batch); // ahora con SpriteBatch
@@ -177,16 +186,30 @@ public class BlockBreakerGame extends ApplicationAdapter {
         shape.begin(ShapeRenderer.ShapeType.Filled);
         pad.draw(shape);
 
-        if (ball.estaQuieto()) {
-            ball.setXY(pad.getX() + pad.getWidth() / 2 - 5, pad.getY() + pad.getHeight() + 11);
-            if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) ball.setEstaQuieto(false);
-        } else {
-            ball.update();
+        for (PingBall b : balls) {
+            if (b.estaQuieto()) {
+                b.setXY(pad.getX() + pad.getWidth() / 2 - 5, pad.getY() + pad.getHeight() + 11);
+                if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) b.setEstaQuieto(false);
+            } else {
+                b.update();
+            }
+
+            b.checkCollision(pad);
+            b.draw(shape);
         }
 
-        if (ball.getY() < 0) {
-            vidas--;
-            ball = new PingBall(pad.getX() + pad.getWidth() / 2 - 5, pad.getY() + pad.getHeight() + 11, 10, 5, 7, true);
+        for (int i = 0; i < balls.size(); i++) {
+            PingBall b = balls.get(i);
+            if (b.getY() < 0) {
+                if (balls.size() > 1) {
+                    balls.remove(i);
+                    i--;
+                } else {
+                    vidas--;
+                    b.setXY(pad.getX() + pad.getWidth() / 2 - 5, pad.getY() + pad.getHeight() + 11);
+                    b.setEstaQuieto(true);
+                }
+            }
         }
 
         if (vidas <= 0) {
@@ -201,7 +224,7 @@ public class BlockBreakerGame extends ApplicationAdapter {
             nivel++;
             crearBloques(2 + nivel);
             powerUps.clear();
-            ball = new PingBall(pad.getX() + pad.getWidth() / 2 - 5, pad.getY() + pad.getHeight() + 11, 10, 5, 7, true);
+            balls.set(0, new PingBall(pad.getX() + pad.getWidth() / 2 - 5, pad.getY() + pad.getHeight() + 11, 10, 5, 7, true));
         }
 
         /* for (Bloque b : blocks) {
@@ -251,8 +274,8 @@ public class BlockBreakerGame extends ApplicationAdapter {
             p.draw(shape);
         }
 
-        ball.checkCollision(pad);
-        ball.draw(shape);
+        //ball.checkCollision(pad);
+        //ball.draw(shape);
         shape.end();
         dibujaTextos();
         dibujaBloques();
@@ -271,7 +294,11 @@ public class BlockBreakerGame extends ApplicationAdapter {
     }
 
     public PingBall getPingBall() {
-        return ball;
+        return balls.get(0);
+    }
+
+    public ArrayList<PingBall> getBalls() {
+        return balls;
     }
 
     @Override

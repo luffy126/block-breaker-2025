@@ -71,10 +71,6 @@ public class PingBall extends SonidoFactory {
                 // Factor de control del ángulo: cuanto mayor, más se desvía horizontalmente
                 float factor = 0.15f;
                 xSpeed = (int)(distancia * factor);
-
-                // Evitar que xSpeed sea cero (rebote completamente vertical)
-                if (xSpeed == 0) xSpeed = (Math.random() < 0.5) ? -3 : 3;
-
             }
 	        else{
 	            color = Color.WHITE;
@@ -118,5 +114,7 @@ public class PingBall extends SonidoFactory {
         this.xSpeed = (int)(this.xSpeed * multiplicador);
         this.ySpeed = (int)(this.ySpeed * multiplicador);
     }
+
+    public int getX() {return x;}
 
 }
