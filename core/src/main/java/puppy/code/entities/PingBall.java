@@ -1,16 +1,14 @@
 package puppy.code.entities;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import puppy.code.block.Bloque;
-import puppy.code.factories.SonidoFactory;
+import puppy.code.gestores.GestorAudio;
 
 import static puppy.code.game.BlockBreakerGame.ALTO_VENTANA;
 import static puppy.code.game.BlockBreakerGame.ANCHO_VENTANA;
 
-public class PingBall extends SonidoFactory {
+public class PingBall {
 	    private int x;
 	    private int y;
 	    private int size;
@@ -18,7 +16,7 @@ public class PingBall extends SonidoFactory {
 	    private int ySpeed;
 	    private Color color = Color.WHITE;
 	    private boolean estaQuieto;
-        private SonidoFactory gestorSonido;
+        private GestorAudio audio = GestorAudio.getInstancia();
 
 	    public PingBall(int x, int y, int size, int xSpeed, int ySpeed, boolean iniciaQuieto) {
 	        this.x = x;
@@ -27,7 +25,6 @@ public class PingBall extends SonidoFactory {
 	        this.xSpeed = xSpeed;
 	        this.ySpeed = ySpeed;
 	        estaQuieto = iniciaQuieto;
-            gestorSonido = new SonidoFactory();
 	    }
 
 	    public boolean estaQuieto() {
@@ -63,7 +60,7 @@ public class PingBall extends SonidoFactory {
 	        if(collidesWith(paddle)){
 	            color = Color.RED;
 	            ySpeed = -ySpeed;
-                gestorSonido.reproducirGolpeBola();
+                audio.reproducirGolpeBola();
 
                 int centroPaddle = paddle.getX() + paddle.getWidth() / 2;
                 int distancia = x - centroPaddle;
@@ -87,7 +84,7 @@ public class PingBall extends SonidoFactory {
 	        if(collidesWith(bloque)){
 	            ySpeed = - ySpeed;
 	            bloque.daño();
-                gestorSonido.reproducirGolpeBola();
+                audio.reproducirGolpeBola();
 	        }
 	    }
 	    private boolean collidesWith(Bloque bb) {

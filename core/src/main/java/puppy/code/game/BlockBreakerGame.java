@@ -17,14 +17,17 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import puppy.code.block.*;
 import puppy.code.entities.*;
+import puppy.code.gestores.GestorAudio;
+import puppy.code.gestores.GestorBloques;
+import puppy.code.gestores.GestorPowerUps;
 import puppy.code.powerups.PowerUp;
 import puppy.code.factories.*;
 
 public class BlockBreakerGame extends ApplicationAdapter {
-    static final String RUTA_BLOQUE_DEFAULT = "bloques/default.png";
-    static final String RUTA_BLOQUE_DURO = "bloques/duro.png";
-    static final String RUTA_BLOQUE_REGEN = "bloques/regen.png";
-    static final String RUTA_BLOQUE_EXPLOSIVO = "bloques/explosivo.png";
+    public static final String RUTA_BLOQUE_DEFAULT = "bloques/default.png";
+    public static final String RUTA_BLOQUE_DURO = "bloques/duro.png";
+    public static final String RUTA_BLOQUE_REGEN = "bloques/regen.png";
+    public static final String RUTA_BLOQUE_EXPLOSIVO = "bloques/explosivo.png";
     public static final int ANCHO_VENTANA = 1024;
     public static final int ALTO_VENTANA = 768;
     private OrthographicCamera camera;
@@ -38,8 +41,10 @@ public class BlockBreakerGame extends ApplicationAdapter {
     private int vidas;
     private int puntaje;
     private int nivel;
-    private ArrayList<PowerUp> powerUps = new ArrayList<>();
-    private SonidoFactory gestorAudio;
+    private GestorPowerUps gestorPowerUps;
+    // private ArrayList<PowerUp> powerUps = new ArrayList<>();
+    private GestorAudio gestorAudio;
+    private GestorBloques gestorBloques;
     private Texture fondo;
     private float fondoScrollX = 0f;
     private float fondoScrollY = 0f;
@@ -48,7 +53,7 @@ public class BlockBreakerGame extends ApplicationAdapter {
     @Override
 
     public void create () {
-        gestorAudio = new SonidoFactory(); // sonido
+        gestorAudio = GestorAudio.getInstancia(); // sonido
 
         camera = new OrthographicCamera(); // camara
 
@@ -60,11 +65,13 @@ public class BlockBreakerGame extends ApplicationAdapter {
         font = new BitmapFont(); // texto
         font.getData().setScale(3, 2);
 
-        nivel = 1; // nivel
-
-        crearBloques(2+nivel); // bloques
+        gestorBloques = new GestorBloques();
+        gestorBloques.generarBloques();
+        blocks = gestorBloques.getBloques();
 
         gestorAudio.reproducirMusicaDeFondo();
+
+        gestorPowerUps = new GestorPowerUps();
 
         fondo = new Texture(Gdx.files.internal("fondos/bg_tile1.png"));
         fondo.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
@@ -74,56 +81,9 @@ public class BlockBreakerGame extends ApplicationAdapter {
         pad = new Paddle(ANCHO_VENTANA/2-50,40,160,10);
         vidas = 3;
         puntaje = 0;
+        nivel = gestorBloques.getNivelActual();
         camera.position.set(400, 240, 0);
         camera.update();
-    }
-
-    public void crearBloques(int filas) {
-        blocks.clear();
-        int blockWidth = 117;
-        int blockHeight = 45;
-        int espacio = 10;
-        int margen = (ANCHO_VENTANA - (blockWidth * 8 + espacio * 7)) / 2;
-        int y = ALTO_VENTANA;
-        int tipoBloque;
-        java.util.Random random = new java.util.Random();
-
-        for (int cont = 0; cont < filas; cont++) {
-            y -= blockHeight + 10;
-            for (int x = margen; x < ANCHO_VENTANA - margen; x += blockWidth + espacio) {
-
-                int chance = random.nextInt(100); // valor entre 0 y 99
-
-                if (chance < 10) {          // 10% → Regen
-                    tipoBloque = 1;
-                } else if (chance < 30) {   // 20% → Duro
-                    tipoBloque = 0;
-                } else if (chance < 40) {   // 10% → Explosivo
-                    tipoBloque = 2;
-                } else {
-                    tipoBloque = 3;
-
-                }
-
-                Bloque bloque;
-
-                switch (tipoBloque) {
-                    case 0:
-                        bloque = new BloqueDuro(x, y, blockWidth, blockHeight, RUTA_BLOQUE_DURO);
-                        break;
-                    case 1:
-                        bloque = new BloqueRegen(x, y, blockWidth, blockHeight, RUTA_BLOQUE_REGEN);
-                        break;
-                    case 2:
-                        bloque = new BloqueExplosion(x, y, blockWidth, blockHeight, RUTA_BLOQUE_EXPLOSIVO, blocks);
-                        break;
-                    default:
-                        bloque = new BloqueNormal(x, y, blockWidth, blockHeight, RUTA_BLOQUE_DEFAULT);
-                        break;
-                }
-                blocks.add(bloque);
-            }
-        }
     }
 
     public void dibujaTextos() {
@@ -213,72 +173,75 @@ public class BlockBreakerGame extends ApplicationAdapter {
         }
 
         if (vidas <= 0) {
+            gestorBloques.reiniciar();
+            reiniciarNivel();
             vidas = 3;
-            nivel = 1;
-            crearBloques(2 + nivel);
-            powerUps.clear();
+            puntaje = 0;
         }
 
-        boolean todosDestruidos = blocks.stream().noneMatch(Bloque::estaActivo);
-        if (todosDestruidos) {
-            nivel++;
-            crearBloques(2 + nivel);
-            powerUps.clear();
-            balls.set(0, new PingBall(pad.getX() + pad.getWidth() / 2 - 5, pad.getY() + pad.getHeight() + 11, 10, 5, 7, true));
+        gestorBloques.verificarProgreso();
+        blocks = gestorBloques.getBloques();
+
+        if (gestorBloques.getNivelActual() > nivel) {
+            nivel = gestorBloques.getNivelActual();
+            reiniciarNivel();
         }
 
-        /* for (Bloque b : blocks) {
-            if (!b.isDestroyed()) {
-                ball.checkCollision(b);
-            }
-            b.comportamiento(Gdx.graphics.getDeltaTime());
-            b.draw(shape);
-        } */
+        if (gestorBloques.isJuegoCompletado()) {
+            shape.end();
+            dibujaFinDelJuego();
+            return;
+        }
 
         for (int i = 0; i < blocks.size(); i++) {
             Bloque b = blocks.get(i);
             if (b.debeEliminarse()) {
                 puntaje++;
-                PowerUp powerUp = PowerUpFactory.intentarGenerar(
-                    b.getX() + b.getWidth() / 2 - 10,
-                    b.getY()
-                );
-                if (powerUp != null) {
-                    powerUp.iniciarCaida();
-                    powerUps.add(powerUp);
-                }
-
+                gestorPowerUps.generarPowerUp(b.getX() + b.getWidth() / 2 - 10, b.getY());
                 blocks.remove(b);
                 i--;
             }
         }
 
-        for (int i = 0; i < powerUps.size(); i++) {
-            PowerUp p = powerUps.get(i);
-            p.actualizarCaida(Gdx.graphics.getDeltaTime());
+        gestorPowerUps.actualizarPowerUps(this, pad);
+        gestorPowerUps.dibujarPowerUps(shape);
 
-            if (p.colisionaCon(pad.getX(), pad.getY(), pad.getWidth(), pad.getHeight())) {
-                p.aplicarEfecto(this);
-                gestorAudio.reproducirPowerUp();
-                powerUps.remove(i);
-                i--;
-                continue;
-            }
-
-            if (p.escapoDeLaPantalla()) {
-                powerUps.remove(i);
-                i--;
-                continue;
-            }
-
-            p.draw(shape);
-        }
-
-        //ball.checkCollision(pad);
-        //ball.draw(shape);
         shape.end();
         dibujaTextos();
         dibujaBloques();
+    }
+
+    private void reiniciarNivel() {
+        gestorPowerUps.limpiar();
+        balls.clear();
+        balls.add(new PingBall(ANCHO_VENTANA / 2-10, 41, 10, 5, 7, true));
+        pad = new Paddle(ANCHO_VENTANA / 2 - 80, 40, 160, 10);
+        blocks = gestorBloques.getBloques();
+    }
+
+    private void dibujaFinDelJuego() {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
+
+        batch.begin();
+        font.draw(batch, "Felicidades!", ANCHO_VENTANA / 2f - 120, ALTO_VENTANA / 2f + 80);
+        font.draw(batch, "Has completado el juego.", ANCHO_VENTANA / 2f - 170, ALTO_VENTANA / 2f + 40);
+        font.draw(batch, "Presiona R para reiniciar", ANCHO_VENTANA / 2f - 200, ALTO_VENTANA / 2f - 20);
+        font.draw(batch, "o ESC para salir", ANCHO_VENTANA / 2f - 130, ALTO_VENTANA / 2f - 60);
+
+        batch.end();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+            gestorBloques.reiniciar();
+            reiniciarNivel();
+            vidas = 3;
+            puntaje = 0;
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Gdx.app.exit();
+        }
     }
 
     public void addVida() {
