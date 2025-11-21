@@ -2,7 +2,6 @@ package puppy.code.gestores;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.Gdx;
-import puppy.code.entities.Paddle;
 import puppy.code.powerups.PowerUp;
 import puppy.code.factories.PowerUpFactory;
 import puppy.code.game.BlockBreakerGame;
@@ -26,20 +25,17 @@ public class GestorPowerUps {
         }
     }
 
-    public void actualizarPowerUps(BlockBreakerGame game, Paddle pad) {
+    public void actualizarPowerUps(BlockBreakerGame game) {
+        float delta = Gdx.graphics.getDeltaTime();
+
         for (int i = 0; i < powerUps.size(); i++) {
             PowerUp p = powerUps.get(i);
-            p.actualizarCaida(Gdx.graphics.getDeltaTime());
 
-            if (p.colisionaCon(pad.getX(), pad.getY(), pad.getWidth(), pad.getHeight())) {
-                p.aplicarEfecto(game);
+            boolean antesEstabaCayendo = p.estaCayendo();
+            p.actualizar(delta, game); // template
+
+            if (antesEstabaCayendo && !p.estaCayendo()) {
                 gestorAudio.reproducirPowerUp();
-                powerUps.remove(i);
-                i--;
-                continue;
-            }
-
-            if (p.escapoDeLaPantalla()) {
                 powerUps.remove(i);
                 i--;
             }

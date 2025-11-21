@@ -2,6 +2,7 @@ package puppy.code.powerups;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import puppy.code.entities.Paddle;
 import puppy.code.game.BlockBreakerGame;
 import puppy.code.interfaces.ConCaida;
 
@@ -13,9 +14,9 @@ public abstract class PowerUp implements ConCaida {
     protected float velocidadCaida;
     protected boolean cayendo;
 
-    private static final float VELOCIDAD_CAIDA_INICIAL = -150f;
-    private static final float ACELERACION_GRAVEDAD = -200f;
-    private static final float VELOCIDAD_MAXIMA = -350f;
+    public static final float VELOCIDAD_CAIDA_INICIAL = -150f;
+    public static final float ACELERACION_GRAVEDAD = -200f;
+    public static final float VELOCIDAD_MAXIMA = -100000f;
 
     public PowerUp(int x, int y, Color color) {
         this.x = x;
@@ -29,23 +30,26 @@ public abstract class PowerUp implements ConCaida {
     public abstract void aplicarEfecto(BlockBreakerGame game); //Aqui ya si, esta la herencia y la implicancia de usar abstract para los tipos.
 
     @Override
-    public void iniciarCaida() {
-        this.cayendo = true;
-        this.velocidadCaida = VELOCIDAD_CAIDA_INICIAL;
+    public abstract void iniciarCaida();
+
+    public final void actualizar(float delta, BlockBreakerGame game) { // template
+        if (!cayendo) return;
+
+        moverVertical(delta);
+
+        if (colisionaConPaddle(game.getPaddle())) {
+            aplicarEfecto(game);
+            detenerCaida();
+        }
+
+        if (escapoDeLaPantalla()) {
+            detenerCaida();
+        }
     }
 
-    @Override
-    public void actualizarCaida(float delta) {
-        if (!cayendo) {
-            return;
-        }
-
+    protected void moverVertical(float delta) {
         velocidadCaida += ACELERACION_GRAVEDAD * delta;
-
-        if (velocidadCaida < VELOCIDAD_MAXIMA) {
-            velocidadCaida = VELOCIDAD_MAXIMA;
-        }
-
+        if (velocidadCaida < VELOCIDAD_MAXIMA) velocidadCaida = VELOCIDAD_MAXIMA;
         y += (int)(velocidadCaida * delta);
     }
 
@@ -88,6 +92,15 @@ public abstract class PowerUp implements ConCaida {
             shape.setColor(color);
             shape.rect(x, y, width, height);
         }
+    }
+
+    protected boolean colisionaConPaddle(Paddle pad) {
+        return colisionaCon(
+            pad.getX(),
+            pad.getY(),
+            pad.getWidth(),
+            pad.getHeight()
+        );
     }
 
     public boolean colisionaCon(int paddleX, int paddleY, int paddleWidth, int paddleHeight) {
