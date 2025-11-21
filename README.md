@@ -1,7 +1,7 @@
 # BlockBreakerJava
 ## EL QUE NO TRABAJA SE VA A GUANTANAMO
 
-Un juego estilo retro en Java, todo WIP por ahora
+Un juego retro, inspirado en el iconico Block Breaker
 
 ### Requisitos
 
