@@ -12,6 +12,12 @@ public class PowerUpMultibola extends PowerUp implements ConCaida {
     }
 
     @Override
+    public void iniciarCaida() {
+        this.cayendo = true;
+        this.velocidadCaida = VELOCIDAD_CAIDA_INICIAL * 2;
+    }
+
+    @Override
     public void aplicarEfecto(BlockBreakerGame game) {
         PingBall original = game.getBalls().get(0);
         PingBall extra1 = new PingBall((int) original.getX(), (int) original.getY(), 10, 5, 7, false);

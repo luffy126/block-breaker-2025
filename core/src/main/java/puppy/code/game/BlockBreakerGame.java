@@ -203,7 +203,7 @@ public class BlockBreakerGame extends ApplicationAdapter {
             }
         }
 
-        gestorPowerUps.actualizarPowerUps(this, pad);
+        gestorPowerUps.actualizarPowerUps(this);
         gestorPowerUps.dibujarPowerUps(shape);
 
         shape.end();
